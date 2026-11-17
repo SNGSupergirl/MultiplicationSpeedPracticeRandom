@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multiplication Speed Practice 1-12</title>
+<style>
+    body {
+        font-family: "Courier New", Courier, monospace;
+        font-size: 16px;
+        font-weight: bold;
+        margin: 20px auto;
+        max-width: 1000px;
+        color: #000;
+        position: relative; 
+        min-height: 90vh;
+        padding-bottom: 60px;
+        box-sizing: border-box;
+    }
+    
+    .fun-title {
+        font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', cursive;
+        text-align: center;
+        font-size: 36px;
+        margin: 0 0 25px 0;
+        color: #2c3e50;
+        text-shadow: 2px 2px 0px #e0e0e0;
+        letter-spacing: 1px;
+        line-height: 1.2;
+    }
+    .answer-title {
+        font-size: 22px;
+        color: #d32f2f; /* Red for the Answer Key text */
+        display: block;
+        margin-top: -5px;
+        text-shadow: none;
+        letter-spacing: 2px;
+    }
+
+    .controls {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+    .btn {
+        padding: 12px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        margin: 0 8px;
+        cursor: pointer;
+        background-color: #e0e0e0;
+        border: 2px solid #333;
+        border-radius: 6px;
+        transition: background-color 0.2s;
+    }
+    .btn:hover {
+        background-color: #ccc;
+    }
+    .btn-key {
+        background-color: #fadbd8;
+        border-color: #c0392b;
+        color: #c0392b;
+    }
+    .btn-key:hover {
+        background-color: #f5b7b1;
+    }
+    
+    .header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+        padding: 0 10px;
+    }
+    .header div {
+        white-space: nowrap;
+    }
+    .line-input {
+        border-bottom: 2px solid black;
+        display: inline-block;
+        margin-left: 5px;
+    }
+    .name-line { width: 160px; }
+    .date-line { width: 100px; }
+    .time-line { width: 100px; }
+    .score-line { width: 60px; }
+    
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        column-gap: 15px;
+        row-gap: 15px;
+        padding: 0 10px;
+    }
+    .problem {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        white-space: nowrap;
+    }
+    .prob-num {
+        font-size: 13px;
+        color: #555;
+        width: 30px;
+        text-align: right;
+        margin-right: 5px;
+        font-family: Arial, sans-serif;
+    }
+    .equation {
+        text-align: right;
+        width: 95px;
+        white-space: pre;
+    }
+    .answer-line {
+        display: inline-block;
+        width: 45px;
+        border-bottom: 2px solid black;
+        margin-left: 5px;
+        height: 20px;
+        text-align: center;
+        line-height: 22px;
+    }
+    .answer-line.show-answer {
+        color: #d32f2f; /* Colors the answer text red on screen */
+    }
+    
+    .footer {
+        text-align: center;
+        font-size: 14px;
+        font-weight: normal;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding-bottom: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    @media print {
+        .controls, .no-print {
+            display: none !important;
+        }
+        @page {
+            margin: 0.5in; 
+        }
+        body {
+            margin: 0;
+            padding: 0; 
+            max-width: 100%;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact; /* Ensures browsers don't strip colors when printing */
+        }
+        .fun-title {
+            color: #000;
+            text-shadow: none; 
+            margin-top: 10px;
+        }
+        .prob-num {
+            color: #333; /* Slightly darker for better print visibility while still keeping distinction */
+        }
+        .answer-title {
+            color: #d32f2f !important; /* Keeps the "ANSWER KEY" subtitle red when printing */
+        }
+        .answer-line.show-answer {
+            color: #d32f2f !important; /* Forces the answers to print in red */
+        }
+        .footer {
+            position: fixed; 
+            bottom: 0;
+            padding-bottom: 0;
+        }
+    }
+</style>
+</head>
+<body>
+
+    <div class="controls no-print">
+        <button class="btn" onclick="generateProblems()">&#128256; Mix-up Problems</button>
+        <button class="btn" onclick="window.print()">&#128424; Print Blank Sheet</button>
+        <button class="btn btn-key" onclick="printAnswerKey()">&#128273; Print Answer Key</button>
+    </div>
+
+    <h1 class="fun-title" id="pageTitle">Multiplication Speed Practice 1-12</h1>
+
+    <div class="header">
+        <div>Name :<span class="line-input name-line">&nbsp;</span></div>
+        <div>Date :<span class="line-input date-line">&nbsp;</span></div>
+        <div>Time :<span class="line-input time-line">&nbsp;</span></div>
+        <div>Score :<span class="line-input score-line">&nbsp;</span> /100</div>
+    </div>
+
+    <div class="grid" id="problemGrid">
+        <!-- Math problems will be dynamically generated here -->
+    </div>
+    
+    <div class="footer">
+        2026 Plan Provide Play &bull; www.PlanProvidePlay.com
+    </div>
+
+    <script>
+        function generateProblems() {
+            const grid = document.getElementById('problemGrid');
+            grid.innerHTML = ''; 
+            
+            for (let i = 0; i < 100; i++) {
+                const num1 = Math.floor(Math.random() * 12) + 1;
+                const num2 = Math.floor(Math.random() * 12) + 1;
+                
+                const str1 = num1 < 10 ? ' ' + num1 : num1;
+                const str2 = num2 < 10 ? ' ' + num2 : num2;
+                const answer = num1 * num2;
+                
+                const problemDiv = document.createElement('div');
+                problemDiv.className = 'problem';
+                
+                // Add Problem Number
+                const numSpan = document.createElement('span');
+                numSpan.className = 'prob-num';
+                numSpan.innerHTML = (i + 1) + ".";
+                
+                const eqSpan = document.createElement('span');
+                eqSpan.className = 'equation';
+                eqSpan.innerHTML = `${str1} &times; ${str2} =`;
+                
+                const ansSpan = document.createElement('span');
+                ansSpan.className = 'answer-line';
+                ansSpan.innerHTML = '&nbsp;'; 
+                ansSpan.dataset.answer = answer; 
+                
+                problemDiv.appendChild(numSpan);
+                problemDiv.appendChild(eqSpan);
+                problemDiv.appendChild(ansSpan);
+                grid.appendChild(problemDiv);
+            }
+        }
+
+        function printAnswerKey() {
+            const title = document.getElementById('pageTitle');
+            title.innerHTML = "Multiplication Speed Practice 1-12<br><span class='answer-title'>ANSWER KEY</span>";
+            
+            const answers = document.querySelectorAll('.answer-line');
+            answers.forEach(span => {
+                span.innerHTML = span.dataset.answer;
+                span.classList.add('show-answer');
+            });
+
+            setTimeout(() => {
+                window.print();
+                
+                title.innerHTML = "Multiplication Practice 1-12";
+                answers.forEach(span => {
+                    span.innerHTML = '&nbsp;';
+                    span.classList.remove('show-answer');
+                });
+            }, 150);
+        }
+
+        window.onload = generateProblems;
+    </script>
+</body>
+</html>
